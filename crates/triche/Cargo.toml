@@ -1,0 +1,10 @@
+[package]
+name = "triche"
+version = "0.1.0"
+authors = ["Rrogntudju"]
+edition = "2021"
+
+[dependencies]
+clap = "4"
+
+
