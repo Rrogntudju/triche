@@ -9,7 +9,7 @@ fn valide_position(arg: &str) -> Result<(char, usize), String> {
             Ok(c) => {
                 let n = arg.chars().nth(1).unwrap();
                 if "12345".contains(n) {
-                    Ok((c, n.to_string().parse().unwrap()))
+                    Ok((c, n.to_string().parse::<usize>().unwrap() - 1))
                 } else {
                     Err("la position n'est pas 1-5".to_owned())
                 }
@@ -28,6 +28,21 @@ fn valide_lettre(arg: &str) -> Result<char, String> {
     } else {
         Err("la lettre n'est pas a-z".to_owned())
     }
+}
+
+fn filtre_vert(mot: &[char; 5], v: &Vec<&(char, usize)>) -> bool {
+
+   true
+}
+
+fn filtre_jaune(mot: &[char; 5], j: &Vec<&(char, usize)>) -> bool {
+
+   true
+}
+
+fn filtre_noir(mot: &[char; 5], n: &Vec<&char>) -> bool {
+
+   true
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -62,16 +77,27 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .get_matches();
 
-    let fichier = File::open("english-words.txt")?;
-    let fichier = BufReader::new(fichier);
-    let mut mots: Vec<String> = Vec::new();
-    for mot in fichier.lines() {
-        match mot {
-            Ok(mot) if mot.len() == 5 => mots.push(mot),
-            Ok(_) => continue,
-            Err(e) => return Err(e.into()),
-        }
-    }
+   let vertes = matches.get_many("verte").unwrap_or_default().collect::<Vec<&(char, usize)>>();
+   let jaunes = matches.get_many("jaune").unwrap_or_default().collect::<Vec<&(char, usize)>>();
+   let noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
+   let fichier = File::open("english-words.txt")?;
+   let fichier = BufReader::new(fichier);
+   let mut mots: Vec<[char; 5]> = Vec::new();
+   let filtre = filtre_vert;
+   for mot in fichier.lines() {
+      match mot {
+         Ok(mot) if mot.len() == 5 => {
+            let mot = mot.to_ascii_lowercase();
+            let mut m = [' '; 5];
+            mot.char_indices().for_each(|(i, c)| m[i] = c);
+            if filtre(&m, &vertes) {
+               mots.push(m);
+            }
+         }
+         Ok(_) => continue,
+         Err(e) => return Err(e.into()),
+      }
+   }
 
-    Ok(())
+   Ok(())
 }
