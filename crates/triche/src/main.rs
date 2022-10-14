@@ -3,13 +3,13 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-fn valide_position(arg: &str) -> Result<String, String> {
+fn valide_position(arg: &str) -> Result<(char, usize), String> {
     if arg.len() == 2 {
         match valide_lettre(arg) {
             Ok(c) => {
                 let n = arg.chars().nth(1).unwrap();
                 if "12345".contains(n) {
-                    Ok(format!("{}{}", c, n))
+                    Ok((c, n.to_string().parse().unwrap()))
                 } else {
                     Err("la position n'est pas 1-5".to_owned())
                 }
