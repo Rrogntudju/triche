@@ -72,7 +72,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if !jaunes.is_empty() {
-        filtres.push(Box::new(|mot: &[char; 5]| true));
+        let filtre = |mot: &[char; 5]| {
+            let trouvées = jaunes.iter().fold(0, |mut acc, &j| {
+                if mot[j.1] != j.0 {
+                    if let Some(_) = (0..j.1).find(|&i| mot[i] == j.0) {
+                        acc+=1
+                    } else if let Some(_) = (j.1 + 1..=5).find(|&i| mot[i] == j.0) {
+                        acc+=1
+                    }
+                }
+                acc
+            });
+            trouvées == jaunes.len()
+        };
+        filtres.push(Box::new(filtre));
     }
 
     if !vertes.is_empty() {
