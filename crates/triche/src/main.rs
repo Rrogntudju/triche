@@ -66,12 +66,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let jaunes = matches.get_many("jaune").unwrap_or_default().collect::<Vec<&(char, usize)>>();
     let noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
+
     if !noires.is_empty() {
         filtres.push(Box::new(|mot: &[char; 5]| true));
     }
+
     if !jaunes.is_empty() {
         filtres.push(Box::new(|mot: &[char; 5]| true));
     }
+
     if !vertes.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let trouvées = vertes.iter().fold(0, |mut acc, &v| {
