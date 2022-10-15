@@ -30,8 +30,18 @@ fn valide_lettre(arg: &str) -> Result<char, String> {
    }
 }
 
-fn créer_filtres(v: bool, j: bool, n: bool) -> Vec<impl FnMut(&[char; 5]) -> bool> {
-   vec!(|mot: &[char; 5]| { true })
+fn créer_filtres(v: bool, j: bool, n: bool) -> Vec<Box<dyn FnMut(&[char; 5]) -> bool>> {
+   let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
+   if n {
+      filtres.push(Box::new(|mot: &[char; 5]| { true }));
+   }
+   if j {
+      filtres.push(Box::new(|mot: &[char; 5]| { true }));
+   }
+   if v {
+      filtres.push(Box::new(|mot: &[char; 5]| { true }));
+   }
+   filtres
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
