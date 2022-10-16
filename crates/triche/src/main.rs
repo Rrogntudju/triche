@@ -68,12 +68,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
 
     if !noires.is_empty() {
-        let noiresEtJaunes = noires.iter().filter_map(|&&n| {
+        let noires_et_jaunes: Vec<(char,usize)> = noires.iter().filter_map(|&&n| {
             match jaunes.iter().find(|&&&j| j.0 == n) {
                 Some(&&j) => Some((n, j.1)),
                 None => None
             }
-        });
+        }).collect();
     }
 
     if !jaunes.is_empty() {
