@@ -68,12 +68,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
 
     if !noires.is_empty() {
-        filtres.push(Box::new(|mot: &[char; 5]| true));
+        let noiresEtJaunes = noires.iter().filter_map(|&&n| {
+            match jaunes.iter().find(|&&&j| j.0 == n) {
+                Some(&&j) => Some((n, j.1)),
+                None => None
+            }
+        });
     }
 
     if !jaunes.is_empty() {
         let filtre = |mot: &[char; 5]| {
-            let trouvées = jaunes.iter().fold(0, |mut acc, &j| {
+            let trouvées = jaunes.iter().fold(0, |mut acc, &&j| {
                 if mot[j.1] != j.0 {
                     if let Some(_) = (0..j.1).find(|&i| mot[i] == j.0) {
                         acc+=1
@@ -90,7 +95,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if !vertes.is_empty() {
         let filtre = |mot: &[char; 5]| {
-            let trouvées = vertes.iter().fold(0, |mut acc, &v| {
+            let trouvées = vertes.iter().fold(0, |mut acc, &&v| {
                 if mot[v.1] == v.0 {
                     acc += 1;
                 }
