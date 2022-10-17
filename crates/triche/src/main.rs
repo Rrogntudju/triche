@@ -64,16 +64,32 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let vertes = matches.get_many("verte").unwrap_or_default().collect::<Vec<&(char, usize)>>();
     let jaunes = matches.get_many("jaune").unwrap_or_default().collect::<Vec<&(char, usize)>>();
-    let noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
+    let mut noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
+    let noires_et_jaunes:  Vec<(char,usize)>;
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
 
-    if !noires.is_empty() {
-        let noires_et_jaunes: Vec<(char,usize)> = noires.iter().filter_map(|&&n| {
+    if !noires.is_empty() && !jaunes.is_empty() {
+        noires_et_jaunes  = noires.iter().filter_map(|&&n| {
             match jaunes.iter().find(|&&&j| j.0 == n) {
                 Some(&&j) => Some((n, j.1)),
                 None => None
             }
         }).collect();
+
+        if !noires_et_jaunes.is_empty() {
+            noires = noires.iter().filter_map(|&n| {
+                for nj in &noires_et_jaunes {
+                    if nj.0 == *n {
+                        return None
+                    }
+                }
+                Some(n)
+            }).collect();
+        }
+    }
+
+    if !noires.is_empty() {
+
     }
 
     if !jaunes.is_empty() {
