@@ -65,29 +65,48 @@ fn main() -> Result<(), Box<dyn Error>> {
     let vertes = matches.get_many("verte").unwrap_or_default().collect::<Vec<&(char, usize)>>();
     let jaunes = matches.get_many("jaune").unwrap_or_default().collect::<Vec<&(char, usize)>>();
     let mut noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
-    let noires_et_jaunes:  Vec<(char,usize)>;
+    let noires_et_jaunes: Vec<(char, usize)>;
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
 
     if !noires.is_empty() && !jaunes.is_empty() {
-        noires_et_jaunes  = noires.iter().filter_map(|&&n| {
-            match jaunes.iter().find(|&&&j| j.0 == n) {
+        noires_et_jaunes = noires
+            .iter()
+            .filter_map(|&&n| match jaunes.iter().find(|&&&j| j.0 == n) {
                 Some(&&j) => Some((n, j.1)),
-                None => None
-            }
-        }).collect();
+                None => None,
+            })
+            .collect();
 
         if !noires_et_jaunes.is_empty() {
-            noires = noires.iter().filter_map(|&n| {
-                match noires_et_jaunes.iter().find(|nj| nj.0 == *n) {
+            noires = noires
+                .iter()
+                .filter_map(|&n| match noires_et_jaunes.iter().find(|nj| nj.0 == *n) {
                     Some(_) => None,
-                    None => Some(n)
-                }
-            }).collect();
+                    None => Some(n),
+                })
+                .collect();
         }
+    } else {
+        noires_et_jaunes = Vec::new();
     }
 
     if !noires.is_empty() {
+        let filtre = |mot: &[char; 5]| match mot.iter().find(|l| match noires.iter().find(|&n| n == l) {
+            Some(_) => true,
+            None => false,
+        }) {
+            Some(_) => false,
+            None => true,
+        };
+        filtres.push(Box::new(filtre));
+    }
 
+    if !noires_et_jaunes.is_empty() {
+        let filtre = |mot: &[char; 5]| match noires_et_jaunes.iter().find(|&&n| mot[n.1] == n.0) {
+            Some(_) => false,
+            None => true,
+        };
+        filtres.push(Box::new(filtre));
     }
 
     if !jaunes.is_empty() {
@@ -95,9 +114,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             let trouvées = jaunes.iter().fold(0, |mut acc, &&j| {
                 if mot[j.1] != j.0 {
                     if let Some(_) = (0..j.1).find(|&i| mot[i] == j.0) {
-                        acc+=1
+                        acc += 1
                     } else if let Some(_) = (j.1 + 1..=5).find(|&i| mot[i] == j.0) {
-                        acc+=1
+                        acc += 1
                     }
                 }
                 acc
