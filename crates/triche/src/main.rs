@@ -143,6 +143,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(filtre) => filtre,
         _ => return Err("Pas de filtre".into()),
     };
+
     let fichier = File::open("english-words.txt")?;
     let fichier = BufReader::new(fichier);
     let mut mots: Vec<[char; 5]> = Vec::new();
@@ -160,6 +161,16 @@ fn main() -> Result<(), Box<dyn Error>> {
             Ok(_) => continue,
             Err(e) => return Err(e.into()),
         }
+    }
+
+    for mut filtre in filtres {
+        let mut filtré: Vec<[char; 5]> = Vec::new();
+        for mot in &mots {
+            if filtre(mot) {
+                filtré.push(*mot)
+            }
+        }
+        mots = filtré;
     }
 
     Ok(())
