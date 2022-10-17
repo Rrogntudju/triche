@@ -78,12 +78,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         if !noires_et_jaunes.is_empty() {
             noires = noires.iter().filter_map(|&n| {
-                for nj in &noires_et_jaunes {
-                    if nj.0 == *n {
-                        return None
-                    }
+                match noires_et_jaunes.iter().find(|nj| nj.0 == *n) {
+                    Some(_) => None,
+                    None => Some(n)
                 }
-                Some(n)
             }).collect();
         }
     }
