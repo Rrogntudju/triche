@@ -165,9 +165,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     for mut filtre in filtres {
         let mut filtré: Vec<[char; 5]> = Vec::new();
-        for mot in &mots {
-            if filtre(mot) {
-                filtré.push(*mot)
+        for mot in mots {
+            if filtre(&mot) {
+                filtré.push(mot)
             }
         }
         mots = filtré;
