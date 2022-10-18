@@ -65,6 +65,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let vertes = matches.get_many("verte").unwrap().collect::<Vec<&(char, usize)>>();
     let jaunes = matches.get_many("jaune").unwrap().collect::<Vec<&(char, usize)>>();
     let mut noires = matches.get_many("noire").unwrap().collect::<Vec<&char>>();
+
+    // Éliminer les doublons accidentels
     noires.sort();
     let mut prec = ' ';
     noires = noires
