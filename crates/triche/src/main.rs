@@ -62,9 +62,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .get_matches();
 
-    let vertes = matches.get_many("verte").unwrap_or_default().collect::<Vec<&(char, usize)>>();
-    let jaunes = matches.get_many("jaune").unwrap_or_default().collect::<Vec<&(char, usize)>>();
-    let mut noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
+    let vertes = matches.get_many("verte").unwrap().collect::<Vec<&(char, usize)>>();
+    let jaunes = matches.get_many("jaune").unwrap().collect::<Vec<&(char, usize)>>();
+    let mut noires = matches.get_many("noire").unwrap().collect::<Vec<&char>>();
+    noires.sort();
+    let mut prec = ' ';
+    noires = noires
+        .iter()
+        .filter_map(|&l| {
+            if l == &prec {
+                None
+            } else {
+                prec = *l;
+                Some(l)
+            }
+        })
+        .collect();
+
     let noires_et_jaunes: Vec<(char, usize)>;
     let noires_et_vertes: Vec<(char, usize)>;
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
