@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let jaunes = matches.get_many("jaune").unwrap().collect::<Vec<&(char, usize)>>();
     let mut noires = matches.get_many("noire").unwrap().collect::<Vec<&char>>();
 
-    // Éliminer les doublons accidentels
+    // Éliminer les doublons
     noires.sort();
     let mut prec = ' ';
     noires = noires
@@ -105,6 +105,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .collect();
     }
 
+    // Éliminer les mots contenant une lettre noire
     if !noires.is_empty() {
         let filtre = |mot: &[char; 5]| match mot.iter().find(|l| match noires.iter().find(|&n| n == l) {
             Some(_) => true,
@@ -116,6 +117,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
+    // Conserver les mots ayant une lettre jaune à une position autre que la position indiquée
     if !jaunes.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let trouvées = jaunes.iter().fold(0, |mut acc, &&j| {
@@ -133,6 +135,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
+    // Conserver les mots ayant une lettre verte à la position indiquée
     if !vertes.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let trouvées = vertes.iter().fold(0, |mut acc, &&v| {
