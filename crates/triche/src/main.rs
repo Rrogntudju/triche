@@ -66,6 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let jaunes = matches.get_many("jaune").unwrap_or_default().collect::<Vec<&(char, usize)>>();
     let mut noires = matches.get_many("noire").unwrap_or_default().collect::<Vec<&char>>();
     let noires_et_jaunes: Vec<(char, usize)>;
+    let noires_et_vertes: Vec<(char, usize)>;
     let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
 
     if !noires.is_empty() && !jaunes.is_empty() {
@@ -90,11 +91,41 @@ fn main() -> Result<(), Box<dyn Error>> {
         noires_et_jaunes = Vec::new();
     }
 
+    if !noires.is_empty() && !vertes.is_empty() {
+        noires_et_vertes = noires
+            .iter()
+            .filter_map(|&&n| match vertes.iter().find(|&&&j| j.0 == n) {
+                Some(&&j) => Some((n, j.1)),
+                None => None,
+            })
+            .collect();
+
+        if !noires_et_vertes.is_empty() {
+            noires = noires
+                .iter()
+                .filter_map(|&n| match noires_et_vertes.iter().find(|nj| nj.0 == *n) {
+                    Some(_) => None,
+                    None => Some(n),
+                })
+                .collect();
+        }
+    } else {
+        noires_et_vertes = Vec::new();
+    }
+
     if !noires.is_empty() {
         let filtre = |mot: &[char; 5]| match mot.iter().find(|l| match noires.iter().find(|&n| n == l) {
             Some(_) => true,
             None => false,
         }) {
+            Some(_) => false,
+            None => true,
+        };
+        filtres.push(Box::new(filtre));
+    }
+
+    if !noires_et_vertes.is_empty() {
+        let filtre = |mot: &[char; 5]| match noires_et_vertes.iter().find(|&&n| mot[n.1] == n.0) {
             Some(_) => false,
             None => true,
         };
