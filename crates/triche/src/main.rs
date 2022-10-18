@@ -191,7 +191,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         } else {
             print!(" {}", mot);
         }
-        nb+=1;
+        nb += 1;
         if nb == 7 {
             nb = 0;
         }
