@@ -183,5 +183,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         mots = filtrés;
     }
 
+    let mut nb: usize = 0;
+    for mot in mots.iter().take(49) {
+        let mot = String::from_iter(mot);
+        if nb == 0 {
+            println!("{}", mot);
+        } else {
+            print!(" {}", mot);
+        }
+        nb+=1;
+        if nb == 7 {
+            nb = 0;
+        }
+    }
+
+    if mots.len() > 49 {
+        println!("Seulement les 49 premiers mots de la sélection sont affichés")
+    }
+
     Ok(())
 }
