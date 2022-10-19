@@ -3,6 +3,8 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+const MAX:usize = 70;
+
 fn valide_position(arg: &str) -> Result<(char, usize), String> {
     if arg.len() == 2 {
         match valide_lettre(arg) {
@@ -196,7 +198,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut nb: usize = 0;
-    for mot in mots.iter().take(49) {
+    for mot in mots.iter().take(MAX) {
         let mot = String::from_iter(mot);
         if nb == 0 {
             println!("{}", mot);
@@ -209,8 +211,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    if mots.len() > 49 {
-        println!("Seulement les 49 premiers mots de la sélection ({}) sont affichés", mots.len())
+    if mots.len() > MAX {
+        println!("Seulement les {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
     }
 
     Ok(())
