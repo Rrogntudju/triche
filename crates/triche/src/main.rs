@@ -203,15 +203,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut newline = false;
     for mot in mots.iter().take(MAX) {
         let mot = String::from_iter(mot);
-        if nb == 0 {
-            if newline {
-                print!("\n");
-                newline = false;
-            }
-            print!("{}", mot);
-        } else {
-            print!("  {}", mot);
+        if newline {
+            print!("\n");
+            newline = false;
         }
+        print!("{}  ", mot);
         nb += 1;
         if nb == 7 {
             newline = true;
