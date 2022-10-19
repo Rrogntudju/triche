@@ -64,20 +64,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .get_matches();
 
-    let vertes = if matches.args_present() {
-        matches.get_many("verte").unwrap().collect::<Vec<&(char, usize)>>()
-    } else {
-        Vec::new()
+    let vertes = match matches.try_get_many::<(char, usize)>("verte")? {
+        Some(values) => values.collect(),
+        None => Vec::new()
     };
-    let jaunes = if matches.args_present() {
-        matches.get_many("jaune").unwrap().collect::<Vec<&(char, usize)>>()
-    } else {
-        Vec::new()
+    let jaunes =  match matches.try_get_many::<(char, usize)>("jaune")? {
+        Some(values) => values.collect(),
+        None => Vec::new()
     };
-    let mut noires = if matches.args_present() {
-        matches.get_many("noire").unwrap().collect::<Vec<&char>>()
-    } else {
-        Vec::new()
+    let mut noires =  match matches.try_get_many::<char>("noire")? {
+        Some(values) => values.collect(),
+        None => Vec::new()
     };
 
     // Éliminer les doublons
