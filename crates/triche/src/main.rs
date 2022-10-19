@@ -189,7 +189,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if nb == 0 {
             println!("{}", mot);
         } else {
-            print!(" {}", mot);
+            print!("  {}", mot);
         }
         nb += 1;
         if nb == 7 {
@@ -198,7 +198,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if mots.len() > 49 {
-        println!("Seulement les 49 premiers mots de la sélection sont affichés")
+        println!("Seulement les 49 premiers mots de la sélection ({}) sont affichés", mots.len())
     }
 
     Ok(())
