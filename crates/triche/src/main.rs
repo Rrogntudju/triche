@@ -1,4 +1,5 @@
 use clap::{builder::ValueRange, Arg, ArgAction, Command};
+use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -58,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .help("lettres noires.  Ex: r s")
                 .short('n')
                 .long("noire")
-                .num_args(ValueRange::new(1..=5))
+                .num_args(ValueRange::new(1..=26))
                 .action(ArgAction::Append)
                 .value_parser(valide_lettre),
         )
@@ -165,18 +166,22 @@ fn main() -> Result<(), Box<dyn Error>> {
         _ => return Err("Pas de filtre".into()),
     };
 
-    let fichier = File::open("english-words.txt")?;
+    let mut fichier = env::current_exe()?;
+    fichier.set_file_name("english-words.txt");
+    let fichier = File::open(fichier)?;
     let fichier = BufReader::new(fichier);
     let mut mots: Vec<[char; 5]> = Vec::new();
 
     for mot in fichier.lines() {
         match mot {
             Ok(mot) if mot.len() == 5 => {
-                let mot = mot.to_ascii_lowercase();
-                let mut m = [' '; 5];
-                mot.char_indices().for_each(|(i, c)| m[i] = c);
-                if filtre(&m) {
-                    mots.push(m);
+                if let None = mot.find(|l: char| !l.is_ascii_alphabetic()) {
+                    let mot = mot.to_ascii_lowercase();
+                    let mut m = [' '; 5];
+                    mot.char_indices().for_each(|(i, c)| m[i] = c);
+                    if filtre(&m) {
+                        mots.push(m);
+                    }
                 }
             }
             Ok(_) => continue,
