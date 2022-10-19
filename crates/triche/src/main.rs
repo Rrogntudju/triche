@@ -62,9 +62,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .get_matches();
 
-    let vertes = matches.get_many("verte").unwrap().collect::<Vec<&(char, usize)>>();
-    let jaunes = matches.get_many("jaune").unwrap().collect::<Vec<&(char, usize)>>();
-    let mut noires = matches.get_many("noire").unwrap().collect::<Vec<&char>>();
+    let vertes = if matches.args_present() {
+        matches.get_many("verte").unwrap().collect::<Vec<&(char, usize)>>()
+    } else {
+        Vec::new()
+    };
+    let jaunes = if matches.args_present() {
+        matches.get_many("jaune").unwrap().collect::<Vec<&(char, usize)>>()
+    } else {
+        Vec::new()
+    };
+    let mut noires = if matches.args_present() {
+        matches.get_many("noire").unwrap().collect::<Vec<&char>>()
+    } else {
+        Vec::new()
+    };
 
     // Éliminer les doublons
     noires.sort();
