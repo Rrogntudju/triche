@@ -200,21 +200,27 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut nb: usize = 0;
+    let mut newline = false;
     for mot in mots.iter().take(MAX) {
         let mot = String::from_iter(mot);
         if nb == 0 {
-            print!("\n{}", mot);
+            if newline {
+                print!("\n");
+                newline = false;
+            }
+            print!("{}", mot);
         } else {
             print!("  {}", mot);
         }
         nb += 1;
         if nb == 7 {
+            newline = true;
             nb = 0;
         }
     }
 
     if mots.len() > MAX {
-        print!("\n\nSeulement les {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
+        print!("\nSeulement les {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
     }
 
     Ok(())
