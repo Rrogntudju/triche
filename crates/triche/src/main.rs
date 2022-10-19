@@ -135,7 +135,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 if mot[j.1] != j.0 {
                     if let Some(_) = (0..j.1).find(|&i| mot[i] == j.0) {
                         acc += 1
-                    } else if let Some(_) = (j.1 + 1..=5).find(|&i| mot[i] == j.0) {
+                    } else if let Some(_) = (j.1 + 1..5).find(|&i| mot[i] == j.0) {
                         acc += 1
                     }
                 }
@@ -198,7 +198,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     for mot in mots.iter().take(MAX) {
         let mot = String::from_iter(mot);
         if nb == 0 {
-            println!("{}", mot);
+            print!("\n{}", mot);
         } else {
             print!("  {}", mot);
         }
@@ -209,7 +209,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if mots.len() > MAX {
-        println!("Seulement les {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
+        print!("\n\nSeulement les {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
     }
 
     Ok(())
