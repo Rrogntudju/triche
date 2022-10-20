@@ -4,7 +4,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-const MAX:usize = 70;
+const MAX: usize = 70;
 
 fn valide_position(arg: &str) -> Result<(char, usize), String> {
     if arg.len() == 2 {
