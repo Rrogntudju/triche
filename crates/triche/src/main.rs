@@ -4,7 +4,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-const MAX: usize = 70;
+const MAX: usize = 80;
 
 fn valide_position(arg: &str) -> Result<(char, usize), String> {
     if arg.len() == 2 {
@@ -215,7 +215,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         print!("{}  ", mot);
         nb += 1;
-        if nb == 7 {
+        if nb == 8 {
             newline = true;
             nb = 0;
         }
