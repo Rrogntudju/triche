@@ -135,16 +135,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let mut mot = mot.clone();
             let trouvées = jaunes.iter().fold(0, |mut trouvées, &&j| {
                 if mot[j.1] != j.0 {
-                    if let Some(_) = (0..j.1).find(|&i| {
-                        if mot[i] == j.0 {
-                            mot[i] = ' ';
-                            true
-                        } else {
-                            false
-                        }
-                    }) {
-                        trouvées += 1
-                    } else if let Some(_) = (j.1 + 1..5).find(|&i| {
+                    if let Some(_) = (0..j.1).chain(j.1 + 1..5).find(|&i| {
                         if mot[i] == j.0 {
                             mot[i] = ' ';
                             true
