@@ -182,11 +182,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         match mot {
             Ok(mot) if mot.len() == 5 => {
                 if let None = mot.find(|l: char| !l.is_ascii_alphabetic()) {
-                    let mot = mot.to_ascii_lowercase();
-                    let mut m = [' '; 5];
-                    mot.char_indices().for_each(|(i, c)| m[i] = c);
-                    if filtre(&m) {
-                        mots.push(m);
+                    if mot.chars().nth(0).unwrap().is_ascii_lowercase() {
+                        let mut m = [' '; 5];
+                        mot.char_indices().for_each(|(i, c)| m[i] = c);
+                        if filtre(&m) {
+                            mots.push(m);
+                        }
                     }
                 }
             }
