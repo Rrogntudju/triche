@@ -222,7 +222,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if mots.len() > MAX {
-        print!("\nSeulement les {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
+        print!("\nLes {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
     }
 
     Ok(())
