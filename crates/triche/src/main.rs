@@ -129,7 +129,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    // Conserver les mots ayant une lettre jaune à une position autre que la position indiquée
+    // Conserver les mots ayant les lettres jaunes à une position autre que la position indiquée
     if !jaunes.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let mut mot = mot.clone();
@@ -153,7 +153,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    // Conserver les mots ayant une lettre verte à la position indiquée
+    // Conserver les mots ayant les lettres vertes à la position indiquée
     if !vertes.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let trouvées = vertes.iter().fold(0, |mut trouvées, &&v| {
