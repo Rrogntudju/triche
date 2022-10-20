@@ -67,15 +67,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let vertes = match matches.try_get_many::<(char, usize)>("verte")? {
         Some(values) => values.collect(),
-        None => Vec::new()
+        None => Vec::new(),
     };
-    let jaunes =  match matches.try_get_many::<(char, usize)>("jaune")? {
+    let jaunes = match matches.try_get_many::<(char, usize)>("jaune")? {
         Some(values) => values.collect(),
-        None => Vec::new()
+        None => Vec::new(),
     };
-    let mut noires =  match matches.try_get_many::<char>("noire")? {
+    let mut noires = match matches.try_get_many::<char>("noire")? {
         Some(values) => values.collect(),
-        None => Vec::new()
+        None => Vec::new(),
     };
 
     // Éliminer les doublons
@@ -132,15 +132,30 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Conserver les mots ayant une lettre jaune à une position autre que la position indiquée
     if !jaunes.is_empty() {
         let filtre = |mot: &[char; 5]| {
-            let trouvées = jaunes.iter().fold(0, |mut acc, &&j| {
+            let mut mot = mot.clone();
+            let trouvées = jaunes.iter().fold(0, |mut trouvées, &&j| {
                 if mot[j.1] != j.0 {
-                    if let Some(_) = (0..j.1).find(|&i| mot[i] == j.0) {
-                        acc += 1
-                    } else if let Some(_) = (j.1 + 1..5).find(|&i| mot[i] == j.0) {
-                        acc += 1
+                    if let Some(_) = (0..j.1).find(|&i| {
+                        if mot[i] == j.0 {
+                            mot[i] = ' ';
+                            true
+                        } else {
+                            false
+                        }
+                    }) {
+                        trouvées += 1
+                    } else if let Some(_) = (j.1 + 1..5).find(|&i| {
+                        if mot[i] == j.0 {
+                            mot[i] = ' ';
+                            true
+                        } else {
+                            false
+                        }
+                    }) {
+                        trouvées += 1
                     }
                 }
-                acc
+                trouvées
             });
             trouvées == jaunes.len()
         };
@@ -150,11 +165,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Conserver les mots ayant une lettre verte à la position indiquée
     if !vertes.is_empty() {
         let filtre = |mot: &[char; 5]| {
-            let trouvées = vertes.iter().fold(0, |mut acc, &&v| {
+            let trouvées = vertes.iter().fold(0, |mut trouvées, &&v| {
                 if mot[v.1] == v.0 {
-                    acc += 1;
+                    trouvées += 1;
                 }
-                acc
+                trouvées
             });
             trouvées == vertes.len()
         };
