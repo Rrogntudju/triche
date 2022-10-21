@@ -168,7 +168,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut fichier = env::current_exe()?;
-    fichier.set_file_name("english-words.txt");
+    fichier.set_file_name("words_alpha.txt");
     let fichier = File::open(fichier)?;
     let fichier = BufReader::new(fichier);
     let mut mots: Vec<[char; 5]> = Vec::new();
@@ -176,13 +176,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     for mot in fichier.lines() {
         match mot {
             Ok(mot) if mot.len() == 5 => {
-                if let None = mot.find(|l: char| !l.is_ascii_alphabetic()) {
-                    if mot.chars().nth(0).unwrap().is_ascii_lowercase() {
-                        let mut m = [' '; 5];
-                        mot.char_indices().for_each(|(i, c)| m[i] = c);
-                        mots.push(m);
-                    }
-                }
+                let mut m = [' '; 5];
+                mot.char_indices().for_each(|(i, c)| m[i] = c);
+                mots.push(m);
             }
             Ok(_) => continue,
             Err(e) => return Err(e.into()),
