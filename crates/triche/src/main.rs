@@ -117,14 +117,16 @@ fn main() -> Result<(), Box<dyn Error>> {
             .collect();
     }
 
-    // Éliminer les mots contenant une lettre noire
-    if !noires.is_empty() {
-        let filtre = |mot: &[char; 5]| match mot.iter().find(|l| match noires.iter().find(|&n| n == l) {
-            Some(_) => true,
-            None => false,
-        }) {
-            Some(_) => false,
-            None => true,
+    // Conserver les mots ayant les lettres vertes à la position indiquée
+    if !vertes.is_empty() {
+        let filtre = |mot: &[char; 5]| {
+            let trouvées = vertes.iter().fold(0, |mut trouvées, &&v| {
+                if mot[v.1] == v.0 {
+                    trouvées += 1;
+                }
+                trouvées
+            });
+            trouvées == vertes.len()
         };
         filtres.push(Box::new(filtre));
     }
@@ -153,24 +155,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    // Conserver les mots ayant les lettres vertes à la position indiquée
-    if !vertes.is_empty() {
-        let filtre = |mot: &[char; 5]| {
-            let trouvées = vertes.iter().fold(0, |mut trouvées, &&v| {
-                if mot[v.1] == v.0 {
-                    trouvées += 1;
-                }
-                trouvées
-            });
-            trouvées == vertes.len()
+    // Éliminer les mots contenant une lettre noire
+    if !noires.is_empty() {
+        let filtre = |mot: &[char; 5]| match mot.iter().find(|l| match noires.iter().find(|&n| n == l) {
+            Some(_) => true,
+            None => false,
+        }) {
+            Some(_) => false,
+            None => true,
         };
         filtres.push(Box::new(filtre));
     }
-
-    let mut filtre = match filtres.pop() {
-        Some(filtre) => filtre,
-        _ => return Err("Pas de filtre".into()),
-    };
 
     let mut fichier = env::current_exe()?;
     fichier.set_file_name("english-words.txt");
@@ -185,9 +180,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     if mot.chars().nth(0).unwrap().is_ascii_lowercase() {
                         let mut m = [' '; 5];
                         mot.char_indices().for_each(|(i, c)| m[i] = c);
-                        if filtre(&m) {
-                            mots.push(m);
-                        }
+                        mots.push(m);
                     }
                 }
             }
