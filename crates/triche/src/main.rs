@@ -133,26 +133,19 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Conserver les mots ayant les lettres jaunes à une position autre que la position indiquée
     if !jaunes.is_empty() {
-        let filtre = |mot: &[char; 5]| {
-            let mut mot = mot.clone();
-            let trouvées = jaunes.iter().fold(0, |mut trouvées, &&j| {
+        for j in jaunes {
+            let filtre = |mot: &[char; 5]| {
                 if mot[j.1] != j.0 {
-                    if let Some(_) = (0..j.1).chain(j.1 + 1..5).find(|&i| {
-                        if mot[i] == j.0 {
-                            mot[i] = ' ';
-                            true
-                        } else {
-                            false
-                        }
-                    }) {
-                        trouvées += 1
+                    match (0..j.1).chain(j.1 + 1..5).find(|&i| mot[i] == j.0) {
+                        Some(_) => true,
+                        None => false,
                     }
+                } else {
+                    false
                 }
-                trouvées
-            });
-            trouvées == jaunes.len()
-        };
-        filtres.push(Box::new(filtre));
+            };
+            filtres.push(Box::new(filtre));
+        }
     }
 
     // Éliminer les mots contenant une lettre noire
