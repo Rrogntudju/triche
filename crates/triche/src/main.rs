@@ -120,9 +120,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Conserver les mots ayant les lettres vertes à la position indiquée
     if !vertes.is_empty() {
         for v in vertes {
-            let filtre = |mot: &[char; 5]| {
-                mot[v.1] == v.0
-            };
+            let filtre = |mot: &[char; 5]| mot[v.1] == v.0;
             filtres.push(Box::new(filtre));
         }
     }
@@ -146,14 +144,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Éliminer les mots contenant une lettre noire
     if !noires.is_empty() {
-        let filtre = |mot: &[char; 5]| match mot.iter().find(|l| match noires.iter().find(|&n| n == l) {
-            Some(_) => true,
-            None => false,
-        }) {
-            Some(_) => false,
-            None => true,
-        };
-        filtres.push(Box::new(filtre));
+        for n in noires {
+            let filtre = |mot: &[char; 5]| match mot.iter().find(|&&l| l == *n) {
+                Some(_) => false,
+                None => true,
+            };
+            filtres.push(Box::new(filtre));
+        }
     }
 
     let mut fichier = env::current_exe()?;
