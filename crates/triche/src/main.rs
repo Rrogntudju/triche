@@ -119,16 +119,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Conserver les mots ayant les lettres vertes à la position indiquée
     if !vertes.is_empty() {
-        let filtre = |mot: &[char; 5]| {
-            let trouvées = vertes.iter().fold(0, |mut trouvées, &&v| {
-                if mot[v.1] == v.0 {
-                    trouvées += 1;
-                }
-                trouvées
-            });
-            trouvées == vertes.len()
-        };
-        filtres.push(Box::new(filtre));
+        for v in vertes {
+            let filtre = |mot: &[char; 5]| {
+                mot[v.1] == v.0
+            };
+            filtres.push(Box::new(filtre));
+        }
     }
 
     // Conserver les mots ayant les lettres jaunes à une position autre que la position indiquée
