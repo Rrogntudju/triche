@@ -142,7 +142,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // Éliminer les mots contenant une lettre noire
+    // Conserver les mots ne contenant pas une lettre noire
     if !noires.is_empty() {
         for n in noires {
             let filtre = |mot: &[char; 5]| match mot.iter().find(|&&l| l == *n) {
