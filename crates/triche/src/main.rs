@@ -93,8 +93,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .collect();
 
-    let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
-
     // Éliminer les noires qui sont aussi des jaunes
     if !noires.is_empty() && !jaunes.is_empty() {
         noires = noires
@@ -116,6 +114,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             })
             .collect();
     }
+
+    let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
 
     // Conserver les mots ayant les lettres vertes à la position indiquée
     if !vertes.is_empty() {
