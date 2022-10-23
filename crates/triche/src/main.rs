@@ -115,7 +115,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .collect();
     }
 
-    let mut filtres: Vec<Box<dyn FnMut(&[char; 5]) -> bool>> = Vec::new();
+    let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
 
     // Conserver les mots ayant les lettres vertes à la position indiquée
     if !vertes.is_empty() {
@@ -171,7 +171,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    for mut filtre in filtres {
+    for filtre in filtres {
         let mut filtrés: Vec<[char; 5]> = Vec::new();
         for mot in mots {
             if filtre(&mot) {
