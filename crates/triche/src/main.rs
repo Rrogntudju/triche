@@ -159,7 +159,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let fichier = BufReader::new(fichier);
 
     let passe = Box::new(|_: &[char; 5]| true) as Box<dyn Fn(&[char; 5]) -> bool>;
-    let filtre = filtres.iter().next().unwrap_or(&passe);
+    let mut filtres = filtres.into_iter();
+    let filtre = filtres.next().unwrap_or(passe);
 
     let mut mots: Vec<[char; 5]> = Vec::new();
 
