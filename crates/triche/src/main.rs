@@ -157,6 +157,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     fichier.set_file_name("words_alpha.txt");
     let fichier = File::open(fichier)?;
     let fichier = BufReader::new(fichier);
+
+    let passe = Box::new(|_: &[char; 5]| true) as Box<dyn Fn(&[char; 5]) -> bool>;
+    let filtre = filtres.iter().next().unwrap_or(&passe);
+
     let mut mots: Vec<[char; 5]> = Vec::new();
 
     for mot in fichier.lines() {
@@ -164,7 +168,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             Ok(mot) if mot.len() == 5 => {
                 let mut m = [' '; 5];
                 mot.char_indices().for_each(|(i, c)| m[i] = c);
-                mots.push(m);
+                if filtre(&m) {
+                    mots.push(m);
+                }
             }
             Ok(_) => continue,
             Err(e) => return Err(e.into()),
