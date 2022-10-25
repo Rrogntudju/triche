@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 const MAX: usize = 80;
+const MOTS_PAR_LIGNE: usize = 8;
 
 fn valide_position(arg: &str) -> Result<(char, usize), String> {
     if arg.len() == 2 {
@@ -188,7 +189,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         mots = filtrés;
     }
 
-    let mut nb: usize = 0;
+    let mut mpl: usize = 0;
     let mut newline = false;
     for mot in mots.iter().take(MAX) {
         let mot = String::from_iter(mot);
@@ -197,10 +198,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             newline = false;
         }
         print!("{}  ", mot);
-        nb += 1;
-        if nb == 8 {
+        mpl += 1;
+        if mpl == MOTS_PAR_LIGNE {
             newline = true;
-            nb = 0;
+            mpl = 0;
         }
     }
 
