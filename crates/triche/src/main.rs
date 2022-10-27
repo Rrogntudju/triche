@@ -118,55 +118,45 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    if !noires.is_empty() {
-        // Éliminer les noires qui sont aussi des jaunes
-        if !jaunes.is_empty() {
-            noires = noires
-                .iter()
-                .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
-                    Some(_) => None,
-                    None => Some(n),
-                })
-                .collect();
-        }
+    // Éliminer les noires qui sont aussi des jaunes
+    noires = noires
+        .iter()
+        .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
+            Some(_) => None,
+            None => Some(n),
+        })
+        .collect();
 
-        // Éliminer les noires qui sont aussi des vertes
-        if !vertes.is_empty() {
-            noires = noires
-                .iter()
-                .filter_map(|&n| match vertes.iter().find(|v| v.0 == *n) {
-                    Some(_) => None,
-                    None => Some(n),
-                })
-                .collect();
-        }
-    }
+    // Éliminer les noires qui sont aussi des vertes
+    noires = noires
+        .iter()
+        .filter_map(|&n| match vertes.iter().find(|v| v.0 == *n) {
+            Some(_) => None,
+            None => Some(n),
+        })
+        .collect();
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
 
     // Conserver les mots ayant les lettres vertes à la position indiquée
-    if !vertes.is_empty() {
-        for v in vertes {
-            let filtre = |mot: &[char; 5]| mot[v.1] == v.0;
-            filtres.push(Box::new(filtre));
-        }
+    for v in vertes {
+        let filtre = |mot: &[char; 5]| mot[v.1] == v.0;
+        filtres.push(Box::new(filtre));
     }
 
     // Conserver les mots ayant les lettres jaunes à une position autre que la position indiquée
-    if !jaunes.is_empty() {
-        for j in jaunes {
-            let filtre = |mot: &[char; 5]| {
-                if mot[j.1] != j.0 {
-                    match (0..j.1).chain(j.1 + 1..5).find(|&i| mot[i] == j.0) {
-                        Some(_) => true,
-                        None => false,
-                    }
-                } else {
-                    false
+    for j in jaunes {
+        let filtre = |mot: &[char; 5]| {
+            if mot[j.1] != j.0 {
+                match (0..j.1).chain(j.1 + 1..5).find(|&i| mot[i] == j.0) {
+                    Some(_) => true,
+                    None => false,
                 }
-            };
-            filtres.push(Box::new(filtre));
-        }
+            } else {
+                false
+            }
+        };
+        filtres.push(Box::new(filtre));
     }
 
     // Conserver les mots ayant 2 lettres jaunes identiques à une position autre que la position indiquée
@@ -197,14 +187,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     // Conserver les mots ne contenant pas une lettre noire
-    if !noires.is_empty() {
-        for n in noires {
-            let filtre = |mot: &[char; 5]| match mot.iter().find(|&&l| l == *n) {
-                Some(_) => false,
-                None => true,
-            };
-            filtres.push(Box::new(filtre));
-        }
+    for n in noires {
+        let filtre = |mot: &[char; 5]| match mot.iter().find(|&&l| l == *n) {
+            Some(_) => false,
+            None => true,
+        };
+        filtres.push(Box::new(filtre));
     }
 
     let mut fichier = env::current_exe()?;
