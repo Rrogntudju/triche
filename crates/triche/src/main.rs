@@ -56,11 +56,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .value_parser(valide_position),
         )
         .arg(
-            Arg::new("jjaune")
+            Arg::new("Jaune")
                 .help("position de 2 lettres jaunes identiques d'une rangée.  Ex: e1 e3")
                 .short('J')
                 .long("Jaune")
-                .num_args(ValueRange::new(1..=2))
+                .num_args(ValueRange::new(2..=2))
                 .action(ArgAction::Append)
                 .value_parser(valide_position),
         )
@@ -79,12 +79,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
-    let jaunes = match matches.try_get_many::<(char, usize)>("jaune")? {
+    let mut jaunes = match matches.try_get_many::<(char, usize)>("jaune")? {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
 
-    let jjaunes = match matches.try_get_many::<(char, usize)>("jjaune")? {
+    let mut jaunes2 = match matches.try_get_many::<(char, usize)>("Jaune")? {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
@@ -109,22 +109,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .collect();
 
+    // Valider que les 2 lettres sont identiques
+    if !jaunes2.is_empty() {
+        if jaunes2[0].0 == jaunes2[1].0 {
+            jaunes.extend_from_slice(&jaunes2);
+        } else {
+            jaunes2 = Vec::new();
+        }
+    }
+
     if !noires.is_empty() {
         // Éliminer les noires qui sont aussi des jaunes
         if !jaunes.is_empty() {
             noires = noires
                 .iter()
                 .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
-                    Some(_) => None,
-                    None => Some(n),
-                })
-                .collect();
-        }
-
-        if !jjaunes.is_empty() {
-            noires = noires
-                .iter()
-                .filter_map(|&n| match jjaunes.iter().find(|j| j.0 == *n) {
                     Some(_) => None,
                     None => Some(n),
                 })
@@ -168,6 +167,33 @@ fn main() -> Result<(), Box<dyn Error>> {
             };
             filtres.push(Box::new(filtre));
         }
+    }
+
+    // Conserver les mots ayant 2 lettres jaunes identiques à une position autre que la position indiquée
+    if !jaunes2.is_empty() {
+        let filtre = |mot: &[char; 5]| {
+            let mut mot = mot.clone();
+            let mut trouvées = 0;
+            for j in &jaunes2 {
+                if mot[j.1] != j.0 {
+                    if let None = (0..j.1).chain(j.1 + 1..5).find(|&i| {
+                        if mot[i] == j.0 {
+                            mot[i] = ' ';
+                            trouvées += 1;
+                            true
+                        } else {
+                            false
+                        }
+                    }) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+            trouvées == 2
+        };
+        filtres.push(Box::new(filtre));
     }
 
     // Conserver les mots ne contenant pas une lettre noire
