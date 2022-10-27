@@ -56,6 +56,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .value_parser(valide_position),
         )
         .arg(
+            Arg::new("jjaune")
+                .help("position de 2 lettres jaunes identiques d'une rangée.  Ex: e1 e3")
+                .short('J')
+                .long("Jaune")
+                .num_args(ValueRange::new(1..=2))
+                .action(ArgAction::Append)
+                .value_parser(valide_position),
+        )
+        .arg(
             Arg::new("noire")
                 .help("lettres noires.  Ex: r s")
                 .short('n')
@@ -74,6 +83,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
+
+    let jjaunes = match matches.try_get_many::<(char, usize)>("jjaune")? {
+        Some(values) => values.collect(),
+        None => Vec::new(),
+    };
+
     let mut noires = match matches.try_get_many::<char>("noire")? {
         Some(values) => values.collect(),
         None => Vec::new(),
@@ -94,26 +109,38 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .collect();
 
-    // Éliminer les noires qui sont aussi des jaunes
-    if !noires.is_empty() && !jaunes.is_empty() {
-        noires = noires
-            .iter()
-            .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
-                Some(_) => None,
-                None => Some(n),
-            })
-            .collect();
-    }
+    if !noires.is_empty() {
+        // Éliminer les noires qui sont aussi des jaunes
+        if !jaunes.is_empty() {
+            noires = noires
+                .iter()
+                .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
+                    Some(_) => None,
+                    None => Some(n),
+                })
+                .collect();
+        }
 
-    // Éliminer les noires qui sont aussi des vertes
-    if !noires.is_empty() && !vertes.is_empty() {
-        noires = noires
-            .iter()
-            .filter_map(|&n| match vertes.iter().find(|v| v.0 == *n) {
-                Some(_) => None,
-                None => Some(n),
-            })
-            .collect();
+        if !jjaunes.is_empty() {
+            noires = noires
+                .iter()
+                .filter_map(|&n| match jjaunes.iter().find(|j| j.0 == *n) {
+                    Some(_) => None,
+                    None => Some(n),
+                })
+                .collect();
+        }
+
+        // Éliminer les noires qui sont aussi des vertes
+        if !vertes.is_empty() {
+            noires = noires
+                .iter()
+                .filter_map(|&n| match vertes.iter().find(|v| v.0 == *n) {
+                    Some(_) => None,
+                    None => Some(n),
+                })
+                .collect();
+        }
     }
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
