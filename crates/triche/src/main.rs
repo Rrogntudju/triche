@@ -34,6 +34,22 @@ fn valide_lettre(arg: &str) -> Result<char, String> {
     }
 }
 
+fn filtre_doublons<L>(liste: &mut Vec<&L>)
+where
+    L: Ord + PartialEq + Default + Copy,
+{
+    liste.sort();
+    let mut prec = L::default();
+    liste.retain(|&l| {
+        if l == &prec {
+            false
+        } else {
+            prec = *l;
+            true
+        }
+    });
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
         .version("0.2.1")
@@ -42,7 +58,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .help("position des lettres vertes. Ex: a1 r2 o3 s4 e5")
                 .short('v')
                 .long("verte")
-                .num_args(ValueRange::new(1..=5))
+                .num_args(ValueRange::new(1..=30))
                 .action(ArgAction::Append)
                 .value_parser(valide_position),
         )
@@ -51,7 +67,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .help("position des lettres jaunes.  Ex: e1 a3")
                 .short('j')
                 .long("jaune")
-                .num_args(ValueRange::new(1..=5))
+                .num_args(ValueRange::new(1..=30))
                 .action(ArgAction::Append)
                 .value_parser(valide_position),
         )
@@ -69,13 +85,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .help("lettres noires.  Ex: r s")
                 .short('n')
                 .long("noire")
-                .num_args(ValueRange::new(1..=26))
+                .num_args(ValueRange::new(1..=30))
                 .action(ArgAction::Append)
                 .value_parser(valide_lettre),
         )
         .get_matches();
 
-    let vertes = match matches.try_get_many::<(char, usize)>("verte")? {
+    let mut vertes = match matches.try_get_many::<(char, usize)>("verte")? {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
@@ -95,17 +111,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     // Éliminer les doublons
-    noires.sort();
-    let mut prec = ' ';
-    noires.retain(|&l| {
-        if l == &prec {
-            false
-        } else {
-            prec = *l;
-            true
-        }
-    });
-
+    filtre_doublons(&mut vertes);
+    filtre_doublons(&mut jaunes);
+    filtre_doublons(&mut noires);
+    
     // Valider que les 2 lettres sont identiques
     if !jaunes2.is_empty() {
         if jaunes2[0].0 == jaunes2[1].0 {
