@@ -97,17 +97,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Éliminer les doublons
     noires.sort();
     let mut prec = ' ';
-    noires = noires
-        .iter()
-        .filter_map(|&l| {
-            if l == &prec {
-                None
-            } else {
-                prec = *l;
-                Some(l)
-            }
-        })
-        .collect();
+    noires.retain(|&l| {
+        if l == &prec {
+            false
+        } else {
+            prec = *l;
+            true
+        }
+    });
 
     // Valider que les 2 lettres sont identiques
     if !jaunes2.is_empty() {
