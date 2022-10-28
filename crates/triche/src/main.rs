@@ -149,7 +149,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let mut trouvées = 0;
             for j in &jaunes2 {
                 if mot[j.1] != j.0 {
-                    if (0..j.1).chain(j.1 + 1..5).any(|i| {
+                    (0..j.1).chain(j.1 + 1..5).any(|i| {
                         if mot[i] == j.0 {
                             mot[i] = ' ';
                             trouvées += 1;
@@ -157,9 +157,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         } else {
                             false
                         }
-                    }) {
-                        break;
-                    }
+                    });
                 } else {
                     break;
                 }
