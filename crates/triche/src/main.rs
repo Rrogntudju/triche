@@ -118,8 +118,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Éliminer les noires qui sont aussi des jaunes ou des vertes
     noires = noires
         .into_iter()
-        .filter(|&n| jaunes.iter().any(|j| j.0 == *n))
-        .filter(|&n| vertes.iter().any(|v| v.0 == *n))
+        .filter(|&n| jaunes.iter().all(|j| j.0 != *n))
+        .filter(|&n| vertes.iter().all(|v| v.0 != *n))
         .collect();
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
@@ -171,7 +171,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Conserver les mots ne contenant pas une lettre noire
     for n in noires {
-        let filtre = |mot: &[char; 5]| mot.iter().any(|&l| l == *n);
+        let filtre = |mot: &[char; 5]| mot.iter().all(|&l| l != *n);
         filtres.push(Box::new(filtre));
     }
 
