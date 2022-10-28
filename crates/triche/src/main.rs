@@ -57,7 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("Jaune")
-                .help("position de 2 lettres jaunes identiques d'une rangée.  Ex: e1 e3")
+                .help("position de 2 lettres jaunes identiques sur la même rangée.  Ex: e1 e3")
                 .short('J')
                 .long("Jaune")
                 .num_args(ValueRange::new(2..=2))
@@ -159,7 +159,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    // Conserver les mots ayant 2 lettres jaunes identiques à une position autre que la position indiquée
+    // Conserver les mots ayant 2 lettres jaunes identiques (sur une même rangée) à une position autre que la position indiquée
     if !jaunes2.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let mut mot = mot.clone();
