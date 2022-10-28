@@ -36,7 +36,7 @@ fn valide_lettre(arg: &str) -> Result<char, String> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("0.1.0")
+        .version("0.2.1")
         .arg(
             Arg::new("verte")
                 .help("position des lettres vertes. Ex: a1 r2 o3 s4 e5")
