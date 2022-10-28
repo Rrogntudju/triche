@@ -26,7 +26,7 @@ fn valide_position(arg: &str) -> Result<(char, usize), String> {
 }
 
 fn valide_lettre(arg: &str) -> Result<char, String> {
-    let c = arg.chars().nth(0).unwrap();
+    let c = arg.chars().next().unwrap();
     if c.is_ascii_alphabetic() {
         Ok(c.to_ascii_lowercase())
     } else {
@@ -120,15 +120,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Éliminer les noires qui sont aussi des jaunes ou des vertes
     noires = noires
-        .iter()
-        .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
-            Some(_) => None,
-            None => Some(n),
-        })
-        .filter_map(|n| match vertes.iter().find(|v| v.0 == *n) {
-            Some(_) => None,
-            None => Some(n),
-        })
+        .into_iter()
+        .filter(|&n| jaunes.iter().any(|j| j.0 == *n))
+        .filter(|&n| vertes.iter().any(|v| v.0 == *n))
         .collect();
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
@@ -143,10 +137,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     for j in jaunes {
         let filtre = |mot: &[char; 5]| {
             if mot[j.1] != j.0 {
-                match (0..j.1).chain(j.1 + 1..5).find(|&i| mot[i] == j.0) {
-                    Some(_) => true,
-                    None => false,
-                }
+                (0..j.1).chain(j.1 + 1..5).any(|i| mot[i] == j.0)
             } else {
                 false
             }
@@ -157,11 +148,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Conserver les mots ayant 2 lettres jaunes identiques (sur une même rangée) à une position autre que la position indiquée
     if !jaunes2.is_empty() {
         let filtre = |mot: &[char; 5]| {
-            let mut mot = mot.clone();
+            let mut mot = *mot;
             let mut trouvées = 0;
             for j in &jaunes2 {
                 if mot[j.1] != j.0 {
-                    if let None = (0..j.1).chain(j.1 + 1..5).find(|&i| {
+                    if (0..j.1).chain(j.1 + 1..5).any(|i| {
                         if mot[i] == j.0 {
                             mot[i] = ' ';
                             trouvées += 1;
@@ -183,10 +174,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Conserver les mots ne contenant pas une lettre noire
     for n in noires {
-        let filtre = |mot: &[char; 5]| match mot.iter().find(|&&l| l == *n) {
-            Some(_) => false,
-            None => true,
-        };
+        let filtre = |mot: &[char; 5]| mot.iter().any(|&l| l == *n);
         filtres.push(Box::new(filtre));
     }
 
@@ -230,7 +218,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     for mot in mots.iter().take(MAX) {
         let mot = String::from_iter(mot);
         if newline {
-            print!("\n");
+            println!();
             newline = false;
         }
         print!("{}  ", mot);
