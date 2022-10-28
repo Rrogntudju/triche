@@ -34,12 +34,12 @@ fn valide_lettre(arg: &str) -> Result<char, String> {
     }
 }
 
-fn filtre_doublons<L>(liste: &mut Vec<&L>)
+fn filtre_doublons<T>(liste: &mut Vec<&T>)
 where
-    L: Ord + PartialEq + Default + Copy,
+    T: Ord + PartialEq + Default + Copy,
 {
     liste.sort();
-    let mut prec = L::default();
+    let mut prec = T::default();
     liste.retain(|&l| {
         if l == &prec {
             false
@@ -114,7 +114,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     filtre_doublons(&mut vertes);
     filtre_doublons(&mut jaunes);
     filtre_doublons(&mut noires);
-    
+
     // Valider que les 2 lettres sont identiques
     if !jaunes2.is_empty() {
         if jaunes2[0].0 == jaunes2[1].0 {
