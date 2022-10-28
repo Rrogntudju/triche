@@ -40,11 +40,11 @@ where
 {
     liste.sort();
     let mut prec = T::default();
-    liste.retain(|&l| {
-        if l == &prec {
+    liste.retain(|&e| {
+        if e == &prec {
             false
         } else {
-            prec = *l;
+            prec = *e;
             true
         }
     });
