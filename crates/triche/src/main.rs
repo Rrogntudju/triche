@@ -118,19 +118,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // Éliminer les noires qui sont aussi des jaunes
+    // Éliminer les noires qui sont aussi des jaunes ou des vertes
     noires = noires
         .iter()
         .filter_map(|&n| match jaunes.iter().find(|j| j.0 == *n) {
             Some(_) => None,
             None => Some(n),
         })
-        .collect();
-
-    // Éliminer les noires qui sont aussi des vertes
-    noires = noires
-        .iter()
-        .filter_map(|&n| match vertes.iter().find(|v| v.0 == *n) {
+        .filter_map(|n| match vertes.iter().find(|v| v.0 == *n) {
             Some(_) => None,
             None => Some(n),
         })
