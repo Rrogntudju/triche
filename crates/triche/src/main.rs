@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .version("0.2.1")
         .arg(
             Arg::new("verte")
-                .help("position des lettres vertes. Ex «lilac»: l1 i2 l3 a4 c5")
+                .help("position des lettres vertes. Ex: l1 i2 l3 a4 c5")
                 .short('v')
                 .long("verte")
                 .num_args(ValueRange::new(1..=30))
@@ -64,7 +64,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("jaune")
-                .help("position des lettres jaunes.  Ex «lilac»: i1 a3")
+                .help("position des lettres jaunes.  Ex: i1 a3")
                 .short('j')
                 .long("jaune")
                 .num_args(ValueRange::new(1..=30))
@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("Jaune")
-                .help("position de 2 lettres jaunes identiques sur la même rangée.  Ex «lilac»: l2 l5")
+                .help("position de 2 lettres jaunes identiques sur la même rangée.  Ex: l2 l5")
                 .short('J')
                 .long("Jaune")
                 .num_args(ValueRange::new(2..=2))
@@ -82,7 +82,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("noire")
-                .help("lettres noires.  Ex «lilac»: w t f")
+                .help("lettres noires.  Ex: w t f")
                 .short('n')
                 .long("noire")
                 .num_args(ValueRange::new(1..=30))
