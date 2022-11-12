@@ -100,8 +100,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         None => Vec::new(),
     };
 
-    let mut jaunes2 = match matches.try_get_many::<(char, usize)>("Jaune")? {
-        Some(values) => values.collect(),
+    let jaunes2 = match matches.try_get_many::<(char, usize)>("Jaune")? {
+        Some(values) => {
+            let jaunes2 = values.collect::<Vec<&(char, usize)>>();
+            // Valider que les 2 lettres sont identiques
+            if jaunes2[0].0 == jaunes2[1].0 {
+                jaunes.extend_from_slice(&jaunes2);
+                jaunes2
+            } else {
+                return Err(format!(
+                    "Les lettres dans {}{} et {}{} doivent être identiques",
+                    jaunes2[0].0, jaunes2[0].1, jaunes2[1].0, jaunes2[1].1
+                )
+                .into());
+            }
+        }
         None => Vec::new(),
     };
 
@@ -114,15 +127,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     filtre_doublons(&mut vertes);
     filtre_doublons(&mut jaunes);
     filtre_doublons(&mut noires);
-
-    // Valider que les 2 lettres sont identiques
-    if !jaunes2.is_empty() {
-        if jaunes2[0].0 == jaunes2[1].0 {
-            jaunes.extend_from_slice(&jaunes2);
-        } else {
-            jaunes2 = Vec::new();
-        }
-    }
 
     // Éliminer les noires qui sont aussi des jaunes ou des vertes
     noires = noires
@@ -151,7 +155,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    // Conserver les mots ayant 2 lettres jaunes identiques (sur une même rangée) à une position autre que la position indiquée
+    // Conserver les mots ayant 2 lettres jaunes identiques à une position autre que la position indiquée
     if !jaunes2.is_empty() {
         let filtre = |mot: &[char; 5]| {
             let mut mot = *mot;
