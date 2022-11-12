@@ -95,6 +95,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
+    
     let mut jaunes = match matches.try_get_many::<(char, usize)>("jaune")? {
         Some(values) => values.collect(),
         None => Vec::new(),
