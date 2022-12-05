@@ -95,7 +95,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
-    
+
     let mut jaunes = match matches.try_get_many::<(char, usize)>("jaune")? {
         Some(values) => values.collect(),
         None => Vec::new(),
@@ -192,9 +192,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let fichier = File::open(fichier)?;
     let fichier = BufReader::new(fichier);
 
-    let passe = Box::new(|_: &[char; 5]| true) as Box<dyn Fn(&[char; 5]) -> bool>;
     let mut filtres = filtres.into_iter();
-    let filtre = filtres.next().unwrap_or(passe);
+    let filtre = filtres.next().unwrap_or(Box::new(|_: &[char; 5]| true));
 
     let mut mots: Vec<[char; 5]> = Vec::new();
 
