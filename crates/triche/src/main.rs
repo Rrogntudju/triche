@@ -133,6 +133,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     noires = noires
         .into_iter()
         .filter(|&n| jaunes.iter().all(|j| j.0 != *n))
+        .filter(|&n| jaunes2.iter().all(|j| j.0 != *n))
         .filter(|&n| vertes.iter().all(|v| v.0 != *n))
         .collect();
 
