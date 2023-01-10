@@ -103,10 +103,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let jaunes2 = match matches.try_get_many::<(char, usize)>("Jaune")? {
         Some(values) => {
-            let jaunes2 = values.collect::<Vec<&(char, usize)>>();
+            let jaunes2: Vec<&(char, usize)> = values.collect();
             // Valider que les 2 lettres sont identiques
             if jaunes2[0].0 == jaunes2[1].0 {
-                jaunes.extend_from_slice(&jaunes2);
                 jaunes2
             } else {
                 return Err(format!(
