@@ -15,13 +15,13 @@ fn valide_position(arg: &str) -> Result<(char, usize), String> {
                 if "12345".contains(n) {
                     Ok((c, n.to_string().parse::<usize>().unwrap() - 1))
                 } else {
-                    Err("la position n'est pas 1-5".to_owned())
+                    Err("la position de la lettre n'est pas 1-5".to_owned())
                 }
             }
             Err(e) => Err(e),
         }
     } else {
-        Err("la longueur != 2".to_owned())
+        Err("position invalide".to_owned())
     }
 }
 
