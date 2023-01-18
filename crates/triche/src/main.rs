@@ -194,7 +194,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut filtres = filtres.into_iter();
     let filtre = filtres.next().unwrap_or(Box::new(|_: &[char; 5]| true));
-
     let mut mots: Vec<[char; 5]> = Vec::new();
 
     for mot in fichier.lines() {
