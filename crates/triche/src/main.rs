@@ -144,6 +144,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
+    // Conserver les mots ne contenant pas une lettre noire
+    for n in noires {
+        let filtre = |mot: &[char; 5]| mot.iter().all(|&l| l != *n);
+        filtres.push(Box::new(filtre));
+    }
+
     // Conserver les mots ayant les lettres jaunes à une position autre que la position indiquée
     for j in jaunes {
         let filtre = |mot: &[char; 5]| {
@@ -180,13 +186,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         };
         filtres.push(Box::new(filtre));
     }
-
-    // Conserver les mots ne contenant pas une lettre noire
-    for n in noires {
-        let filtre = |mot: &[char; 5]| mot.iter().all(|&l| l != *n);
-        filtres.push(Box::new(filtre));
-    }
-
+    
     let mut fichier = env::current_exe()?;
     fichier.set_file_name("words_alpha.txt");
     let fichier = File::open(fichier)?;
