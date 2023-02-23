@@ -89,6 +89,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .action(ArgAction::Append)
                 .value_parser(valide_lettre),
         )
+        .arg(
+            Arg::new("Noire")
+                .help("position d'une lettre noire identique à une lettre jaune ou verte sur la même rangée.  Ex: o2")
+                .short('N')
+                .long("Noire")
+                .num_args(ValueRange::new(1..=2))
+                .action(ArgAction::Append)
+                .value_parser(valide_position),
+        )
         .get_matches();
 
     let mut vertes = match matches.try_get_many::<(char, usize)>("verte")? {
@@ -123,17 +132,24 @@ fn main() -> Result<(), Box<dyn Error>> {
         None => Vec::new(),
     };
 
+    let mut noires2 = match matches.try_get_many::<(char, usize)>("Noire")? {
+        Some(values) => values.collect(),
+        None => Vec::new(),
+    };
+
     // Éliminer les doublons
     filtre_doublons(&mut vertes);
     filtre_doublons(&mut jaunes);
     filtre_doublons(&mut noires);
+    filtre_doublons(&mut noires2);
 
-    // Éliminer les noires qui sont aussi des jaunes ou des vertes
+    // Éliminer les lettres noires qui sont aussi des jaunes, des vertes ou des noires positionnées
     noires = noires
         .into_iter()
         .filter(|&n| jaunes.iter().all(|j| j.0 != *n))
         .filter(|&n| jaunes2.iter().all(|j| j.0 != *n))
         .filter(|&n| vertes.iter().all(|v| v.0 != *n))
+        .filter(|&n| noires2.iter().all(|v| v.0 != *n))
         .collect();
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
@@ -186,7 +202,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         };
         filtres.push(Box::new(filtre));
     }
-    
+
+    // Conserver les mots n'ayant pas une lettre noire à la position indiquée
+    for n in noires2 {
+        let filtre = |mot: &[char; 5]| mot[n.1] != n.0;
+        filtres.push(Box::new(filtre));
+    }
+
     let mut fichier = env::current_exe()?;
     fichier.set_file_name("words_alpha.txt");
     let fichier = File::open(fichier)?;
