@@ -166,6 +166,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
+    // Conserver les mots n'ayant pas une lettre noire à la position indiquée
+    for n in noires2 {
+        let filtre = |mot: &[char; 5]| mot[n.1] != n.0;
+        filtres.push(Box::new(filtre));
+    }
+
     // Conserver les mots ayant les lettres jaunes à une position autre que la position indiquée
     for j in jaunes {
         let filtre = |mot: &[char; 5]| {
@@ -200,12 +206,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             trouvées == 2
         };
-        filtres.push(Box::new(filtre));
-    }
-
-    // Conserver les mots n'ayant pas une lettre noire à la position indiquée
-    for n in noires2 {
-        let filtre = |mot: &[char; 5]| mot[n.1] != n.0;
         filtres.push(Box::new(filtre));
     }
 
