@@ -52,13 +52,22 @@ where
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("0.2.1")
+        .version("1.0.0")
         .arg(
             Arg::new("verte")
                 .help("position des lettres vertes. Ex: l1 i2 l3 a4 c5")
                 .short('v')
                 .long("verte")
                 .num_args(ValueRange::new(1..=30))
+                .action(ArgAction::Append)
+                .value_parser(valide_position),
+        )
+        .arg(
+            Arg::new("Verte")
+                .help("position d'une lettre verte et d'une lettre jaune identique sur la même rangée. Ex: n3 n2")
+                .short('V')
+                .long("Verte")
+                .num_args(ValueRange::new(2..=2))
                 .action(ArgAction::Append)
                 .value_parser(valide_position),
         )
@@ -94,7 +103,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .help("position d'une lettre noire identique à une lettre jaune ou verte sur la même rangée.  Ex: o2")
                 .short('N')
                 .long("Noire")
-                .num_args(ValueRange::new(1..=2))
+                .num_args(ValueRange::new(1..=4))
                 .action(ArgAction::Append)
                 .value_parser(valide_position),
         )
@@ -102,6 +111,23 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut vertes = match matches.try_get_many::<(char, usize)>("verte")? {
         Some(values) => values.collect(),
+        None => Vec::new(),
+    };
+
+    let vertes2 = match matches.try_get_many::<(char, usize)>("Verte")? {
+        Some(values) => {
+            let vertes2: Vec<&(char, usize)> = values.collect();
+            // Valider que les 2 lettres sont identiques
+            if vertes2[0].0 == vertes2[1].0 {
+                vertes2
+            } else {
+                return Err(format!(
+                    "Les lettres dans {}{} et {}{} doivent être identiques",
+                    vertes2[0].0, vertes2[0].1 + 1, vertes2[1].0, vertes2[1].1 + 1
+                )
+                .into());
+            }
+        }
         None => Vec::new(),
     };
 
@@ -119,7 +145,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             } else {
                 return Err(format!(
                     "Les lettres dans {}{} et {}{} doivent être identiques",
-                    jaunes2[0].0, jaunes2[0].1, jaunes2[1].0, jaunes2[1].1
+                    jaunes2[0].0, jaunes2[0].1 + 1, jaunes2[1].0, jaunes2[1].1 + 1
                 )
                 .into());
             }
@@ -149,6 +175,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .filter(|&n| jaunes.iter().all(|j| j.0 != *n))
         .filter(|&n| jaunes2.iter().all(|j| j.0 != *n))
         .filter(|&n| vertes.iter().all(|v| v.0 != *n))
+        .filter(|&n| vertes2.iter().all(|v| v.0 != *n))
         .filter(|&n| noires2.iter().all(|v| v.0 != *n))
         .collect();
 
@@ -205,6 +232,20 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
             trouvées == 2
+        };
+        filtres.push(Box::new(filtre));
+    }
+
+    // Conserver les mots ayant une lettre jaune à une position autre que la position d'une lettre verte identique
+    if !vertes2.is_empty() {
+        let filtre = |mot: &[char; 5]| {
+            let v = &vertes2[0];
+            let j = &vertes2[1];
+            if mot[j.1] != j.0 {
+                (0..j.1).chain(j.1 + 1..5).any(|i| mot[i] == j.0 && i != v.1)
+            } else {
+                false
+            }
         };
         filtres.push(Box::new(filtre));
     }
