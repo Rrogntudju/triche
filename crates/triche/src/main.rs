@@ -123,7 +123,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             } else {
                 return Err(format!(
                     "Les lettres dans {}{} et {}{} doivent être identiques",
-                    vertes2[0].0, vertes2[0].1 + 1, vertes2[1].0, vertes2[1].1 + 1
+                    vertes2[0].0,
+                    vertes2[0].1 + 1,
+                    vertes2[1].0,
+                    vertes2[1].1 + 1
                 )
                 .into());
             }
@@ -145,7 +148,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             } else {
                 return Err(format!(
                     "Les lettres dans {}{} et {}{} doivent être identiques",
-                    jaunes2[0].0, jaunes2[0].1 + 1, jaunes2[1].0, jaunes2[1].1 + 1
+                    jaunes2[0].0,
+                    jaunes2[0].1 + 1,
+                    jaunes2[1].0,
+                    jaunes2[1].1 + 1
                 )
                 .into());
             }
@@ -178,6 +184,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         .filter(|&n| vertes2.iter().all(|v| v.0 != *n))
         .filter(|&n| noires2.iter().all(|v| v.0 != *n))
         .collect();
+
+    // Éliminer les lettres noires positionnées qui sont aussi des vertes
+    noires2.retain(|&n| vertes.iter().all(|v| v.0 != n.0 && v.1 != n.1));
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
 
