@@ -52,7 +52,7 @@ where
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("1.0.0")
+        .version("1.1.0")
         .arg(
             Arg::new("verte")
                 .help("position des lettres vertes. Ex: l1 i2 l3 a4 c5")
