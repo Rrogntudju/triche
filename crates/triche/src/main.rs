@@ -186,7 +186,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .collect();
 
     // Éliminer les lettres noires positionnées qui sont aussi des vertes
-    noires2.retain(|&n| vertes.iter().all(|v| v.0 != n.0 && v.1 != n.1));
+    noires2.retain(|&n| vertes.iter().all(|v| !(v.0 == n.0 && v.1 == n.1)));
 
     let mut filtres: Vec<Box<dyn Fn(&[char; 5]) -> bool>> = Vec::new();
 
