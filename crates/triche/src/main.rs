@@ -8,13 +8,22 @@ use std::io::{BufRead, BufReader};
 const MAX: usize = 80;
 const MOTS_PAR_LIGNE: usize = 8;
 
-fn valide_position(arg: &str) -> Result<(char, usize), String> {
+#[derive(Clone, Default, Copy, PartialEq, Eq, Ord, PartialOrd)]
+struct Lettre(char, usize);
+
+impl fmt::Display for Lettre {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{}", self.0, self.1 + 1)
+    }
+}
+
+fn valide_position(arg: &str) -> Result<Lettre, String> {
     if arg.len() == 2 {
         match valide_lettre(arg) {
             Ok(c) => {
                 let n = arg.chars().nth(1).unwrap();
                 if "12345".contains(n) {
-                    Ok((c, n.to_string().parse::<usize>().unwrap() - 1))
+                    Ok(Lettre(c, n.to_string().parse::<usize>().unwrap() - 1))
                 } else {
                     Err("la position de la lettre n'est pas 1-5".to_owned())
                 }
@@ -50,17 +59,10 @@ where
         }
     });
 }
-struct L<'a>(&'a (char, usize));
-
-impl<'a> fmt::Display for L<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}{}", self.0 .0, self.0 .1 + 1)
-    }
-}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("1.1.0")
+        .version("1.2.0")
         .arg(
             Arg::new("verte")
                 .help("position des lettres vertes. Ex: l1 i2 l3 a4 c5")
@@ -117,37 +119,37 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .get_matches();
 
-    let mut vertes = match matches.try_get_many::<(char, usize)>("verte")? {
+    let mut vertes = match matches.try_get_many::<Lettre>("verte")? {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
 
-    let vertes2 = match matches.try_get_many::<(char, usize)>("Verte")? {
+    let vertes2 = match matches.try_get_many::<Lettre>("Verte")? {
         Some(values) => {
-            let vertes2: Vec<&(char, usize)> = values.collect();
+            let vertes2: Vec<&Lettre> = values.collect();
             // Valider que les 2 lettres sont identiques
             if vertes2[0].0 == vertes2[1].0 {
                 vertes2
             } else {
-                return Err(format!("Les lettres dans {} et {} doivent être identiques", L(vertes2[0]), L(vertes2[1])).into());
+                return Err(format!("Les lettres dans {} et {} doivent être identiques", vertes2[0], vertes2[1]).into());
             }
         }
         None => Vec::new(),
     };
 
-    let mut jaunes = match matches.try_get_many::<(char, usize)>("jaune")? {
+    let mut jaunes = match matches.try_get_many::<Lettre>("jaune")? {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
 
-    let jaunes2 = match matches.try_get_many::<(char, usize)>("Jaune")? {
+    let jaunes2 = match matches.try_get_many::<Lettre>("Jaune")? {
         Some(values) => {
-            let jaunes2: Vec<&(char, usize)> = values.collect();
+            let jaunes2: Vec<&Lettre> = values.collect();
             // Valider que les 2 lettres sont identiques
             if jaunes2[0].0 == jaunes2[1].0 {
                 jaunes2
             } else {
-                return Err(format!("Les lettres dans {} et {} doivent être identiques", L(jaunes2[0]), L(jaunes2[1])).into());
+                return Err(format!("Les lettres dans {} et {} doivent être identiques", jaunes2[0], jaunes2[1]).into());
             }
         }
         None => Vec::new(),
@@ -158,7 +160,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         None => Vec::new(),
     };
 
-    let mut noires2 = match matches.try_get_many::<(char, usize)>("Noire")? {
+    let mut noires2 = match matches.try_get_many::<Lettre>("Noire")? {
         Some(values) => values.collect(),
         None => Vec::new(),
     };
