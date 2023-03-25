@@ -1,6 +1,7 @@
 use clap::{builder::ValueRange, Arg, ArgAction, Command};
 use std::env;
 use std::error::Error;
+use std::fmt;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -48,6 +49,13 @@ where
             true
         }
     });
+}
+struct L<'a>(&'a (char, usize));
+
+impl<'a> fmt::Display for L<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{}", self.0 .0, self.0 .1 + 1)
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -121,14 +129,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             if vertes2[0].0 == vertes2[1].0 {
                 vertes2
             } else {
-                return Err(format!(
-                    "Les lettres dans {}{} et {}{} doivent être identiques",
-                    vertes2[0].0,
-                    vertes2[0].1 + 1,
-                    vertes2[1].0,
-                    vertes2[1].1 + 1
-                )
-                .into());
+                return Err(format!("Les lettres dans {} et {} doivent être identiques", L(vertes2[0]), L(vertes2[1])).into());
             }
         }
         None => Vec::new(),
@@ -146,14 +147,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             if jaunes2[0].0 == jaunes2[1].0 {
                 jaunes2
             } else {
-                return Err(format!(
-                    "Les lettres dans {}{} et {}{} doivent être identiques",
-                    jaunes2[0].0,
-                    jaunes2[0].1 + 1,
-                    jaunes2[1].0,
-                    jaunes2[1].1 + 1
-                )
-                .into());
+                return Err(format!("Les lettres dans {} et {} doivent être identiques", L(jaunes2[0]), L(jaunes2[1])).into());
             }
         }
         None => Vec::new(),
