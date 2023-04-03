@@ -1,11 +1,13 @@
 let n = [];
 let j = [];
 let v = [];
-let rangées = [];
 let n2 = [];
+let j2 = [];
+let v2 = [];
+let rangées = [];
 let tuiles = document.querySelectorAll("div[data-state]");
 
-// n j v
+// -n -j -v
 let rangée = [];
 for (let i = 0; i < tuiles.length; i++) {
     let label = tuiles[i].getAttribute("aria-label");
@@ -28,19 +30,20 @@ for (let i = 0; i < tuiles.length; i++) {
     }
 }
 
-// N
+// -N
 for (let rangée of rangées) {
     let i = 0;
     for (let label of rangée) {
         let split = label.split(' ');
         if (split[1] == "absent") {
             let noire = split[0];
+            let pos = i;
             let jaune = new Array(5).fill(false);
             let verte = new Array(5).fill(false);
             let j = 0;
             for (let label of rangée) {
                 let split = label.split(' ');
-                if (split[0] == noire) {
+                if (split[0] == noire && j != pos) {
                     if (split[1] == "present") {
                         jaune[j] = true;
                     } else {
