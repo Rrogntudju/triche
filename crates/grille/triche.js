@@ -37,13 +37,12 @@ for (let rangée of rangées) {
         let split = label.split(' ');
         if (split[1] == "absent") {
             let noire = split[0];
-            let pos = i;
             let jaune = new Array(5).fill(false);
             let verte = new Array(5).fill(false);
             let j = 0;
             for (let label of rangée) {
                 let split = label.split(' ');
-                if (split[0] == noire && j != pos) {
+                if (split[0] == noire && j != i) {
                     if (split[1] == "present") {
                         jaune[j] = true;
                     } else {
@@ -66,7 +65,23 @@ for (let rangée of rangées) {
     }
 }
 
-console.log(n);
-console.log(j);
-console.log(v);
-console.log(n2);
+let commande = "triche";
+if (n.length != 0) {
+    commande += " -n " + n.join(' ');
+}
+if (j.length != 0) {
+    commande += " -j " + j.join(' ');
+}
+if (v.length != 0) {
+    commande += " -v " + v.join(' ');
+}
+if (n2.length != 0) {
+    commande += " -N " + n2.join(' ');
+}
+(j2.length != 0) {
+    commande += " -J " + j2.join(' ');
+}
+if (v2.length != 0) {
+    commande += " -V " + v2.join(' ');
+}
+console.log(commande);
