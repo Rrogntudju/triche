@@ -65,6 +65,54 @@ for (let rangée of rangées) {
     }
 }
 
+// -J
+J: {
+    for (let rangée of rangées) {
+        let i = 0;
+        for (let label of rangée) {
+            let split = label.split(' ');
+            if (split[1] == "present") {
+                let jaune = split[0];
+                let j = 0;
+                for (let label of rangée) {
+                    let split = label.split(' ');
+                    if (split[1] == "present" && split[0] == jaune && j != i) {
+                        j2.push(jaune + (i + 1));
+                        j2.push(split[0] + (j + 1));
+                        break J;
+                    }
+                    j++;
+                }
+            }
+            i++;
+        }
+    }
+}
+
+// -V
+V: {
+    for (let rangée of rangées) {
+        let i = 0;
+        for (let label of rangée) {
+            let split = label.split(' ');
+            if (split[1] == "correct") {
+                let verte = split[0];
+                let j = 0;
+                for (let label of rangée) {
+                    let split = label.split(' ');
+                    if (split[1] == "present" && split[0] == verte) {
+                        j2.push(verte + (i + 1));
+                        j2.push(split[0] + (j + 1));
+                        break V;
+                    }
+                    j++;
+                }
+            }
+            i++;
+        }
+    }
+}
+
 let commande = "triche";
 if (n.length != 0) {
     commande += " -n " + n.join(' ');
@@ -78,7 +126,7 @@ if (v.length != 0) {
 if (n2.length != 0) {
     commande += " -N " + n2.join(' ');
 }
-(j2.length != 0) {
+if (j2.length != 0) {
     commande += " -J " + j2.join(' ');
 }
 if (v2.length != 0) {
