@@ -101,8 +101,8 @@ V: {
                 for (let label of rangée) {
                     let split = label.split(' ');
                     if (split[1] == "present" && split[0] == verte) {
-                        j2.push(verte + (i + 1));
-                        j2.push(split[0] + (j + 1));
+                        v2.push(verte + (i + 1));
+                        v2.push(split[0] + (j + 1));
                         break V;
                     }
                     j++;
