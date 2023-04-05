@@ -1,4 +1,4 @@
-{
+function triche() {
     let n = [];
     let j = [];
     let v = [];
@@ -133,5 +133,14 @@
     if (v2.length != 0) {
         commande += " -V " + v2.join(' ');
     }
+
     console.log(commande);
+    navigator.clipboard.writeText(commande)
+    .catch((err) => console.log(err));
 }
+
+var container = document.getElementById('wordle-app-game');
+var btn = document.createElement('button');
+btn.textContent = 'triche';
+btn.addEventListener("click", triche);
+container.appendChild(btn);
