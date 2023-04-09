@@ -46,7 +46,7 @@ function triche() {
                     if (split[0] == noire && j != i) {
                         if (split[1] == "present") {
                             jaune[j] = true;
-                        } else {
+                        } else if (split[1] == "correct") {
                             verte[j] = true;
                         }
                     }
