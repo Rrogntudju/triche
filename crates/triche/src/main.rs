@@ -62,10 +62,10 @@ where
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("1.2.0")
+        .version("1.2.1")
         .arg(
             Arg::new("verte")
-                .help("position des lettres vertes. Ex: l1 i2 l3 a4 c5")
+                .help("position des lettres correctes. Ex: l1 i2 l3 a4 c5")
                 .short('v')
                 .long("verte")
                 .num_args(ValueRange::new(1..=30))
@@ -74,7 +74,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("Verte")
-                .help("position d'une lettre verte et d'une lettre jaune identique sur la même rangée. Ex: n3 n2")
+                .help("position d'une lettre correcte et d'une lettre présente identique sur la même rangée. Ex: n3 n2")
                 .short('V')
                 .long("Verte")
                 .num_args(ValueRange::new(2..=2))
@@ -83,7 +83,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("jaune")
-                .help("position des lettres jaunes.  Ex: i1 a3")
+                .help("position des lettres présentes.  Ex: i1 a3")
                 .short('j')
                 .long("jaune")
                 .num_args(ValueRange::new(1..=30))
@@ -92,7 +92,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("Jaune")
-                .help("position de 2 lettres jaunes identiques sur la même rangée.  Ex: l2 l5")
+                .help("position de 2 lettres présentes identiques sur la même rangée.  Ex: l2 l5")
                 .short('J')
                 .long("Jaune")
                 .num_args(ValueRange::new(2..=2))
@@ -101,7 +101,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("noire")
-                .help("lettres noires.  Ex: w t f")
+                .help("lettres absentes à toutes les positions.  Ex: w t f")
                 .short('n')
                 .long("noire")
                 .num_args(ValueRange::new(1..=30))
@@ -110,10 +110,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .arg(
             Arg::new("Noire")
-                .help("position d'une lettre noire identique à une lettre jaune ou verte sur la même rangée.  Ex: o2")
+                .help("position des lettres absentes.  Ex: w3 t4 f5")
                 .short('N')
                 .long("Noire")
-                .num_args(ValueRange::new(1..=4))
+                .num_args(ValueRange::new(1..=30))
                 .action(ArgAction::Append)
                 .value_parser(valide_position),
         )
