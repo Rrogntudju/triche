@@ -139,7 +139,7 @@ function triche() {
     .catch((err) => console.log(err));
 }
 
-setTimeout( function() {
+setTimeout(function() {
     var container = document.getElementById('wordle-app-game');
     var btn = document.createElement('button');
     btn.textContent = 'triche';
