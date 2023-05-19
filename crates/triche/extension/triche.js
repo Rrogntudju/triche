@@ -139,11 +139,14 @@ function triche() {
     .catch((err) => console.log(err));
 }
 
-setTimeout(function() {
+var i = setInterval(function() {
     var container = document.getElementById('wordle-app-game');
-    var btn = document.createElement('button');
-    btn.textContent = 'triche';
-    btn.addEventListener("click", triche);
-    container.appendChild(btn);
+    if (container) {
+        var btn = document.createElement('button');
+        btn.textContent = 'triche';
+        btn.addEventListener("click", triche);
+        container.appendChild(btn);
+        clearInterval(i);
+    }
 }, 250);
 
