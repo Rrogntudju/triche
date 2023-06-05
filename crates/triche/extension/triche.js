@@ -31,6 +31,12 @@ function triche() {
         }
     }
 
+    // Combinaisons de 2 lettres identiques sur la même ligne (exemples avec BLEEP)
+    // noire + verte : la lettre est unique et n'est présente qu'à la position de la lettre verte. -N b2 b3 b4 b5 -v b1
+    // noire + jaune : la lettre est unique et présente ailleurs que la lettre jaune ou noire. -N b2 -j b3
+    // jaune + jaune : les 2 lettres sont présentes dans les positions restantes. -J e1 e5
+    // verte + jaune : les 2 lettres sont présentes mais la jaune se trouve ailleurs que la verte. -V e3 e5
+
     // -N
     for (let rangée of rangées) {
         let i = 0;
