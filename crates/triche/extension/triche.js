@@ -11,22 +11,22 @@ function triche() {
     // -n -j -v
     let rangée = [];
     for (let i = 0; i < tuiles.length; i++) {
-        let label = tuiles[i].getAttribute("data-state");
-        if (label == "empty") {
+        let label = tuiles[i].getAttribute("aria-label").split(', ');
+        if (label[1] == "empty") {
             break;
         } else {
-            rangée.push(label);
+            let lettre = [label[1].toLowerCase(), tuiles[i].getAttribute("data-state")]
+            rangée.push(lettre);
             if (i % 5 == 4) {
                 rangées.push(rangée);
                 rangée = [];
             }
-            let split = label.split(' ');
-            if (split[1] == "correct") {
-                v.push(split[0] + ((i % 5) + 1));
-            } else if (split[1] == "present") {
-                j.push(split[0] + ((i % 5) + 1));
+            if (lettre[1] == "correct") {
+                v.push(lettre[0] + ((i % 5) + 1));
+            } else if (lettre[1] == "present") {
+                j.push(lettre[0] + ((i % 5) + 1));
             } else {
-                n.push(split[0]);
+                n.push(lettre[0]);
             }
         }
     }
@@ -40,19 +40,17 @@ function triche() {
     // -N
     for (let rangée of rangées) {
         let i = 0;
-        for (let label of rangée) {
-            let split = label.split(' ');
-            if (split[1] == "absent") {
-                let noire = split[0];
+        for (let lettre of rangée) {
+            if (lettre[1] == "absent") {
+                let noire = lettre[0];
                 let jaune = new Array(5).fill(false);
                 let verte = new Array(5).fill(false);
                 let j = 0;
-                for (let label of rangée) {
-                    let split = label.split(' ');
-                    if (split[0] == noire && j != i) {
-                        if (split[1] == "present") {
+                for (let lettre of rangée) {
+                    if (lettre[0] == noire && j != i) {
+                        if (lettre[1] == "present") {
                             jaune[j] = true;
-                        } else if (split[1] == "correct") {
+                        } else if (lettre[1] == "correct") {
                             verte[j] = true;
                         }
                     }
@@ -76,16 +74,14 @@ function triche() {
     J: {
         for (let rangée of rangées) {
             let i = 0;
-            for (let label of rangée) {
-                let split = label.split(' ');
-                if (split[1] == "present") {
-                    let jaune = split[0];
+            for (let lettre of rangée) {
+                if (lettre[1] == "present") {
+                    let jaune = lettre[0];
                     let j = 0;
-                    for (let label of rangée) {
-                        let split = label.split(' ');
-                        if (split[1] == "present" && split[0] == jaune && j != i) {
+                    for (let lettre of rangée) {
+                        if (lettre[1] == "present" && lettre[0] == jaune && j != i) {
                             j2.push(jaune + (i + 1));
-                            j2.push(split[0] + (j + 1));
+                            j2.push(lettre[0] + (j + 1));
                             break J;
                         }
                         j++;
@@ -100,16 +96,14 @@ function triche() {
     V: {
         for (let rangée of rangées) {
             let i = 0;
-            for (let label of rangée) {
-                let split = label.split(' ');
-                if (split[1] == "correct") {
-                    let verte = split[0];
+            for (let lettre of rangée) {
+                if (lettre[1] == "correct") {
+                    let verte = lettre[0];
                     let j = 0;
-                    for (let label of rangée) {
-                        let split = label.split(' ');
-                        if (split[1] == "present" && split[0] == verte) {
+                    for (let lettre of rangée) {
+                        if (lettre[1] == "present" && lettre[0] == verte) {
                             v2.push(verte + (i + 1));
-                            v2.push(split[0] + (j + 1));
+                            v2.push(lettre[0] + (j + 1));
                             break V;
                         }
                         j++;
