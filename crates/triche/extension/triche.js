@@ -11,7 +11,7 @@ function triche() {
     // -n -j -v
     let rangée = [];
     for (let i = 0; i < tuiles.length; i++) {
-        let label = tuiles[i].getAttribute("aria-label");
+        let label = tuiles[i].getAttribute("data-state");
         if (label == "empty") {
             break;
         } else {
