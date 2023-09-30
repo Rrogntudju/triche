@@ -11,11 +11,12 @@ function triche() {
     // -n -j -v
     let rangée = [];
     for (let i = 0; i < tuiles.length; i++) {
-        let label = tuiles[i].getAttribute("aria-label").split(', ');
-        if (label[1] == "empty") {
+        let state = tuiles[i].getAttribute("data-state");
+        if (state == "empty" || state == "tbd") {
             break;
         } else {
-            let lettre = [label[1].toLowerCase(), tuiles[i].getAttribute("data-state")]
+            let label = tuiles[i].getAttribute("aria-label").split(', ');
+            let lettre = [label[1].toLowerCase(), state];
             rangée.push(lettre);
             if (i % 5 == 4) {
                 rangées.push(rangée);
