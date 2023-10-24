@@ -1,10 +1,9 @@
 use clap::{builder::ValueRange, Arg, ArgAction, Command};
-use std::env;
 use std::error::Error;
 use std::fmt;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, Cursor};
 
+const ALPHA5: &str = include_str!("./words_alpha5.txt");
 const MAX: usize = 80;
 const MOTS_PAR_LIGNE: usize = 8;
 
@@ -62,7 +61,7 @@ where
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("1.2.1")
+        .version("1.3.0")
         .arg(
             Arg::new("verte")
                 .help("position des lettres correctes. Ex: l1 i2 l3 a4 c5")
@@ -255,16 +254,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    let mut fichier = env::current_exe()?;
-    fichier.set_file_name("words_alpha.txt");
-    let fichier = File::open(fichier)?;
-    let fichier = BufReader::new(fichier);
-
     let mut filtres = filtres.into_iter();
     let filtre = filtres.next().unwrap_or(Box::new(|_: &[char; 5]| true));
     let mut mots: Vec<[char; 5]> = Vec::new();
+    let alpha5 = Cursor::new(ALPHA5);
 
-    for mot in fichier.lines() {
+    for mot in alpha5.lines() {
         match mot {
             Ok(mot) if mot.len() == 5 => {
                 let mut m = [' '; 5];
