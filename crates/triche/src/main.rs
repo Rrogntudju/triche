@@ -61,7 +61,7 @@ where
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = Command::new("triche")
-        .version("1.3.0")
+        .version("1.3.1")
         .arg(
             Arg::new("verte")
                 .help("position des lettres correctes. Ex: l1 i2 l3 a4 c5")
@@ -254,32 +254,18 @@ fn main() -> Result<(), Box<dyn Error>> {
         filtres.push(Box::new(filtre));
     }
 
-    let mut filtres = filtres.into_iter();
-    let filtre = filtres.next().unwrap_or(Box::new(|_: &[char; 5]| true));
-    let mut mots: Vec<[char; 5]> = Vec::new();
-    let alpha5 = Cursor::new(ALPHA5);
-
-    for mot in alpha5.lines() {
-        match mot {
-            Ok(mot) if mot.len() == 5 => {
-                let mut m = [' '; 5];
-                mot.char_indices().for_each(|(i, c)| m[i] = c);
-                if filtre(&m) {
-                    mots.push(m);
-                }
-            }
-            Ok(_) => continue,
-            Err(e) => return Err(e.into()),
-        }
-    }
+    let mut mots: Vec<[char; 5]> = Cursor::new(ALPHA5)
+        .lines()
+        .map_while(Result::ok)
+        .map(|m| {
+            let mut mot = [' '; 5];
+            m.char_indices().for_each(|(i, c)| mot[i] = c);
+            mot
+        })
+        .collect();
 
     for filtre in filtres {
-        let mut filtrés: Vec<[char; 5]> = Vec::new();
-        for mot in mots {
-            if filtre(&mot) {
-                filtrés.push(mot)
-            }
-        }
+        let filtrés: Vec<[char; 5]> = mots.into_iter().filter(|m| filtre(m)).collect();
         mots = filtrés;
     }
 
