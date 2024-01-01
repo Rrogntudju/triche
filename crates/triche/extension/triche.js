@@ -140,10 +140,10 @@ function triche() {
     .catch((err) => console.log(err));
 }
 
-var interval = setInterval(function() {
+let interval = setInterval(function () {
     let container = document.getElementById('wordle-app-game');
     if (container) {
-        var btn = document.createElement('button');
+        let btn = document.createElement('button');
         btn.textContent = 'triche';
         btn.addEventListener("click", triche);
         container.appendChild(btn);
