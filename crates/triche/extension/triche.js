@@ -141,7 +141,7 @@ function triche() {
 }
 
 var interval = setInterval(function() {
-    var container = document.getElementById('wordle-app-game');
+    let container = document.getElementById('wordle-app-game');
     if (container) {
         var btn = document.createElement('button');
         btn.textContent = 'triche';
