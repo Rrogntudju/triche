@@ -288,6 +288,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     if mots.len() > MAX {
         print!("\nLes {} premiers mots de la sélection ({}) sont affichés", MAX, mots.len())
     }
+    println!("");
 
     Ok(())
 }
