@@ -4487,6 +4487,7 @@ emlen
 emmer
 emmet
 emmew
+emoji
 emong
 emony
 emory
