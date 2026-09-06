@@ -61,7 +61,7 @@ where
 
 fn main() -> Result<(), Error> {
     let matches = Command::new("triche")
-        .version("1.3.1")
+        .version("1.3.2")
         .arg(
             Arg::new("verte")
                 .help("position des lettres correctes. Ex: l1 i2 l3 a4 c5")
