@@ -1,5 +1,5 @@
-use clap::{builder::ValueRange, Arg, ArgAction, Command};
-use std::error::Error;
+use anyhow::{Error, anyhow};
+use clap::{Arg, ArgAction, Command, builder::ValueRange};
 use std::fmt;
 use std::io::{BufRead, Cursor};
 
@@ -16,7 +16,7 @@ impl fmt::Display for Lettre {
     }
 }
 
-fn valide_position(arg: &str) -> Result<Lettre, String> {
+fn valide_position(arg: &str) -> Result<Lettre, Error> {
     if arg.len() == 2 {
         match valide_lettre(arg) {
             Ok(c) => {
@@ -24,22 +24,22 @@ fn valide_position(arg: &str) -> Result<Lettre, String> {
                 if "12345".contains(n) {
                     Ok(Lettre(c, n.to_string().parse::<usize>().unwrap() - 1))
                 } else {
-                    Err("la position de la lettre n'est pas 1-5".to_owned())
+                    Err(anyhow!("la position de la lettre n'est pas 1-5"))
                 }
             }
-            Err(e) => Err(e),
+            Err(e) => Err(anyhow!(e)),
         }
     } else {
-        Err("position invalide".to_owned())
+        Err(anyhow!("position invalide"))
     }
 }
 
-fn valide_lettre(arg: &str) -> Result<char, String> {
+fn valide_lettre(arg: &str) -> Result<char, Error> {
     let c = arg.chars().next().unwrap();
     if c.is_ascii_alphabetic() {
         Ok(c.to_ascii_lowercase())
     } else {
-        Err("la lettre n'est pas a-z".to_owned())
+        Err(anyhow!("la lettre n'est pas a-z"))
     }
 }
 
@@ -59,7 +59,7 @@ where
     });
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Error> {
     let matches = Command::new("triche")
         .version("1.3.1")
         .arg(
@@ -127,11 +127,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(values) => {
             let vertes2: Vec<&Lettre> = values.collect();
             // Valider que les 2 lettres sont identiques
-            if vertes2[0].0 == vertes2[1].0 {
-                vertes2
-            } else {
-                return Err(format!("Les lettres dans {} et {} doivent être identiques", vertes2[0], vertes2[1]).into());
-            }
+            (vertes2[0].0 == vertes2[1].0).then_some(vertes2.clone()).ok_or(anyhow!(
+                "Les lettres dans {} et {} doivent être identiques",
+                vertes2[0],
+                vertes2[1]
+            ))?
         }
         None => Vec::new(),
     };
@@ -145,11 +145,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Some(values) => {
             let jaunes2: Vec<&Lettre> = values.collect();
             // Valider que les 2 lettres sont identiques
-            if jaunes2[0].0 == jaunes2[1].0 {
-                jaunes2
-            } else {
-                return Err(format!("Les lettres dans {} et {} doivent être identiques", jaunes2[0], jaunes2[1]).into());
-            }
+            (jaunes2[0].0 == jaunes2[1].0).then_some(jaunes2.clone()).ok_or(anyhow!(
+                "Les lettres dans {} et {} doivent être identiques",
+                jaunes2[0],
+                jaunes2[1]
+            ))?
         }
         None => Vec::new(),
     };
