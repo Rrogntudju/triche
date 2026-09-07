@@ -137,7 +137,7 @@ function triche() {
 
     console.log(commande);
     navigator.clipboard.writeText(commande)
-    .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
 }
 
 let interval = setInterval(function () {
