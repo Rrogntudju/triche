@@ -144,7 +144,7 @@ let interval = setInterval(function () {
     let container = document.getElementById('wordle-app-game');
     if (container) {
         let btn = document.createElement('button');
-        btn.textContent = 'triche';
+        btn.textContent = 'TRICHE';
         btn.addEventListener("click", triche);
         container.appendChild(btn);
         clearInterval(interval);
